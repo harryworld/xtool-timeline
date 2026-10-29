@@ -1,0 +1,19 @@
+# Timeline
+
+A cute timeline-style calendar app for iPhone, written in SwiftUI with SwiftPM and built **on Linux** with [xtool](https://github.com/xtool-org/xtool). No Xcode GUI needed.
+
+## Features
+- Today's events from the iPhone calendar (EventKit) on a vertical timeline with a live current-time line
+- Horizontal day paging that never ends, with whole-page snapping
+- A week strip that pages week by week, also without end
+- A Week view with the dates stacked down the left, which pages vertically by week
+- The date bubbles fly between the strip and the column when you switch Day/Week
+- A Today toolbar button that fades between enabled and disabled
+- A pastel theme and app icon
+
+## Build and run
+```sh
+xtool dev build --sign             # debug (default)
+xtool dev build -c release --sign  # release
+```
+The app was installed over Tailscale with [pymobiledevice3](https://github.com/doronz88/pymobiledevice3), following [omarchy-apple-dev](https://github.com/joshuaswarren/omarchy-apple-dev).
