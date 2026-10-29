@@ -11,6 +11,24 @@ A cute timeline-style calendar app for iPhone, written in SwiftUI with SwiftPM a
 - A Today toolbar button that fades between enabled and disabled
 - A pastel theme and app icon
 
+## Project structure
+```
+Sources/Hello/
+├── App/TimelineApp.swift          # @main entry, injects CalendarStore
+├── Model/
+│   ├── CalendarStore.swift        # EventKit access, per-day async loading
+│   ├── ViewMode.swift             # Day / Week
+│   └── WeekIndex.swift            # week offsets used as pager page ids
+├── Support/Paging.swift           # withoutAnimation, PageWindow (infinite pagers)
+├── Theme/                         # pastel palette, event emoji
+└── Views/
+    ├── ContentView.swift          # composition + Day/Week switch
+    ├── Components/                # header, bottom bar, date bubble, bubble flight overlay
+    ├── Day/                       # day pager, timeline grid, event blocks, all-day strip
+    ├── Week/                      # week strip pager, vertical week view, week rows
+    └── States/                    # loading, empty, access denied
+```
+
 ## Build and run
 ```sh
 xtool dev build --sign             # debug (default)

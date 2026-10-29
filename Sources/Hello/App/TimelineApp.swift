@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct HelloApp: App {
+struct TimelineApp: App {
     @State private var store = CalendarStore()
 
     var body: some Scene {
