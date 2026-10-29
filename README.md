@@ -11,6 +11,7 @@ A cute timeline-style calendar app for iPhone, written in SwiftUI with SwiftPM a
 - A Year view with a 3-column grid of mini months (today highlighted, a dot on days with events), paging vertically by year without end; tap a month to open it in Month view
 - The selected week's date bubbles fly between the strip, the week column and the month grid when you switch Day/Week/Month
 - A Today toolbar button that fades between enabled and disabled (in Year view it jumps to the current year)
+- An icon-only Day/Week/Month/Year switcher
 - A pastel theme and app icon
 
 ## Project structure

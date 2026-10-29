@@ -48,26 +48,22 @@ struct ModeToggle: View {
             ForEach(ViewMode.allCases, id: \.self) { m in
                 let on = m == mode
                 Button { onMode(m) } label: {
-                    HStack(spacing: 5) {
-                        Image(systemName: m.symbol)
-                        if on {
-                            Text(m.rawValue).transition(.opacity.combined(with: .scale(scale: 0.8)))
+                    Image(systemName: m.symbol)
+                        .font(.subheadline.weight(.bold))
+                        .foregroundStyle(on ? Color.white : Theme.lavenderDeep)
+                        .frame(width: 22, height: 20)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 9)
+                        .background {
+                            if on {
+                                Capsule()
+                                    .fill(LinearGradient(colors: [Theme.lavenderDeep.pastel(0.1), Theme.lavenderDeep.pastel(0.4)],
+                                                         startPoint: .top, endPoint: .bottom))
+                                    .matchedGeometryEffect(id: "seg", in: seg)
+                                    .shadow(color: Theme.lavenderDeep.opacity(0.3), radius: 5, y: 2)
+                            }
                         }
-                    }
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(on ? Color.white : Theme.lavenderDeep)
-                    .padding(.horizontal, on ? 12 : 11)
-                    .padding(.vertical, 9)
-                    .background {
-                        if on {
-                            Capsule()
-                                .fill(LinearGradient(colors: [Theme.lavenderDeep.pastel(0.1), Theme.lavenderDeep.pastel(0.4)],
-                                                     startPoint: .top, endPoint: .bottom))
-                                .matchedGeometryEffect(id: "seg", in: seg)
-                                .shadow(color: Theme.lavenderDeep.opacity(0.3), radius: 5, y: 2)
-                        }
-                    }
-                    .contentShape(Capsule())
+                        .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(m.rawValue)
