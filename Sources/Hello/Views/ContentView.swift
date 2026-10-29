@@ -3,7 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @Environment(CalendarStore.self) private var store
     @Environment(\.scenePhase) private var scenePhase
-    @State private var mode: ViewMode = .day
+    @State private var mode: ViewMode = .initial
     /// Where the selected week's bubbles sit in the strip and in the week column (root coordinates).
     @State private var frames = BubbleFrames()
     /// Non-nil while the selected week's bubbles fly between strip and column in the overlay.
@@ -54,6 +54,16 @@ struct ContentView: View {
         setMode(.day)
     }
 
+    private func openMonth(_ monthStart: Date) {
+        store.select(YearIndex.dayToOpen(month: monthStart, selected: store.day))
+        setMode(.month)
+    }
+
+    /// Today is disabled on today, or in Year view anywhere in the current year.
+    private var atToday: Bool {
+        mode == .year ? YearIndex.offset(for: store.day) == 0 : store.isToday
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(day: store.day, count: store.allDay.count + store.timed.count,
@@ -79,6 +89,8 @@ struct ContentView: View {
                     case .month:
                         MonthView(selected: store.day, frames: frames, hideSelected: flight != nil,
                                   onSelect: { store.select($0) }, onOpenDay: openDay)
+                    case .year:
+                        YearView(selected: store.day, onSelect: { store.select($0) }, onOpenMonth: openMonth)
                     }
                 }
                 .background(
@@ -100,7 +112,7 @@ struct ContentView: View {
         .background(Theme.background.ignoresSafeArea())
         .tint(Theme.pinkDeep)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            BottomBar(isToday: store.isToday, mode: mode,
+            BottomBar(isToday: atToday, mode: mode,
                       onToday: { store.select(.now) },
                       onMode: { setMode($0) })
         }
