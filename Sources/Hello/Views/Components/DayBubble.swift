@@ -1,30 +1,34 @@
 import SwiftUI
 
-/// The cute date bubble shared by the week strip (horizontal) and week view (vertical column).
+/// The cute date bubble shared by the week strip, the week column and the month grid.
 struct DayBubble: View {
     let day: Date
     let selected: Date
+    /// Month grid cells drop the weekday letter (the grid has a header row) and sit tighter.
+    var compact = false
 
     var body: some View {
         let cal = Calendar.current
         let isSel = cal.isDate(day, inSameDayAs: selected)
         let isToday = cal.isDateInToday(day)
-        VStack(spacing: 4) {
-            Text(day.formatted(.dateTime.weekday(.narrow)))
-                .font(.caption2.weight(.bold))
-                .foregroundStyle(isSel ? Color.white.opacity(0.95) : (isToday ? Theme.pinkDeep : Theme.softInk))
+        VStack(spacing: compact ? 1 : 4) {
+            if !compact {
+                Text(day.formatted(.dateTime.weekday(.narrow)))
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(isSel ? Color.white.opacity(0.95) : (isToday ? Theme.pinkDeep : Theme.softInk))
+            }
             Text(day.formatted(.dateTime.day()))
-                .font(.title3.weight(isSel || isToday ? .heavy : .semibold).monospacedDigit())
+                .font((compact ? Font.body : .title3).weight(isSel || isToday ? .heavy : .semibold).monospacedDigit())
                 .foregroundStyle(isSel ? Color.white : (isToday ? Theme.pinkDeep : Theme.ink))
             Image(systemName: "heart.fill")
                 .font(.system(size: 8, weight: .bold))
                 .foregroundStyle(isSel ? Color.white : Theme.pinkDeep)
                 .opacity(isToday ? 1 : 0)
         }
-        .padding(.vertical, 8)
-        .frame(minWidth: 44)
+        .padding(.vertical, compact ? 5 : 8)
+        .frame(minWidth: compact ? 40 : 44)
         .background {
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: compact ? 16 : 20, style: .continuous)
                 .fill(isSel
                       ? AnyShapeStyle(LinearGradient(
                             colors: isToday ? [Theme.pinkDeep.pastel(0.15), Theme.pinkDeep.pastel(0.45)]
@@ -40,7 +44,7 @@ struct DayBubble: View {
 }
 
 extension View {
-    /// Report this bubble's frame for the Day/Week flight, and hide it while the overlay draws it.
+    /// Report this bubble's frame for the mode-switch flight, and hide it while the overlay draws it.
     func bubbleSlot(_ day: Date, mode: ViewMode, frames: BubbleFrames, active: Bool, hidden: Bool) -> some View {
         self
             .opacity(active && hidden ? 0 : 1)

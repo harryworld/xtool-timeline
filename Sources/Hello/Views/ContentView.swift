@@ -15,11 +15,14 @@ struct ContentView: View {
         flyToken += 1
         let token = flyToken
         let days = WeekIndex.days(ofWeekContaining: store.day)
-        let from = flight.map { $0.arrived ? $0.to : $0.from } ?? frames.snapshot(mode, days)
+        let from = flight?.frames ?? frames.snapshot(mode, days)
         frames.clear(m)
         let canFly = store.access == .granted && from.count == days.count
         // The overlay takes over the bubbles (in-pager ones hide) before anything moves.
-        withoutAnimation { flight = canFly ? BubbleFlight(days: days, from: from) : nil }
+        let fromMode = flight?.shownMode ?? mode
+        withoutAnimation {
+            flight = canFly ? BubbleFlight(days: days, fromMode: fromMode, toMode: m, from: from) : nil
+        }
         withAnimation(.easeInOut(duration: 0.3)) { mode = m }
         guard canFly else { return }
         Task { @MainActor in
@@ -46,6 +49,11 @@ struct ContentView: View {
         }
     }
 
+    private func openDay(_ d: Date) {
+        store.select(d)
+        setMode(.day)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HeaderView(day: store.day, count: store.allDay.count + store.timed.count,
@@ -61,13 +69,16 @@ struct ContentView: View {
                 AccessDeniedView(restricted: store.access == .restricted)
             case .granted:
                 Group {
-                    if mode == .day {
+                    switch mode {
+                    case .day:
                         DayPager()
                             .transition(.opacity)
-                    } else {
+                    case .week:
                         WeekAgendaView(selected: store.day, frames: frames, hideSelected: flight != nil,
-                                       onSelect: { store.select($0) },
-                                       onOpenDay: { store.select($0); setMode(.day) })
+                                       onSelect: { store.select($0) }, onOpenDay: openDay)
+                    case .month:
+                        MonthView(selected: store.day, frames: frames, hideSelected: flight != nil,
+                                  onSelect: { store.select($0) }, onOpenDay: openDay)
                     }
                 }
                 .background(

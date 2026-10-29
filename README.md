@@ -7,7 +7,8 @@ A cute timeline-style calendar app for iPhone, written in SwiftUI with SwiftPM a
 - Horizontal day paging that never ends, with whole-page snapping
 - A week strip that pages week by week, also without end
 - A Week view with the dates stacked down the left, which pages vertically by week
-- The date bubbles fly between the strip and the column when you switch Day/Week
+- A Month view with a calendar grid, event dots and the selected day's events, paging vertically by month without end
+- The selected week's date bubbles fly between the strip, the week column and the month grid when you switch Day/Week/Month
 - A Today toolbar button that fades between enabled and disabled
 - A pastel theme and app icon
 
@@ -16,9 +17,10 @@ A cute timeline-style calendar app for iPhone, written in SwiftUI with SwiftPM a
 Sources/Hello/
 ├── App/TimelineApp.swift          # @main entry, injects CalendarStore
 ├── Model/
-│   ├── CalendarStore.swift        # EventKit access, per-day async loading
-│   ├── ViewMode.swift             # Day / Week
-│   └── WeekIndex.swift            # week offsets used as pager page ids
+│   ├── CalendarStore.swift        # EventKit access, per-day cache, range loading
+│   ├── ViewMode.swift             # Day / Week / Month
+│   ├── WeekIndex.swift            # week offsets used as pager page ids
+│   └── MonthIndex.swift           # month offsets, month grid days
 ├── Support/Paging.swift           # withoutAnimation, PageWindow (infinite pagers)
 ├── Theme/                         # pastel palette, event emoji
 └── Views/
@@ -26,6 +28,7 @@ Sources/Hello/
     ├── Components/                # header, bottom bar, date bubble, bubble flight overlay
     ├── Day/                       # day pager, timeline grid, event blocks, all-day strip
     ├── Week/                      # week strip pager, vertical week view, week rows
+    ├── Month/                     # month pager, grid, cells with event dots, selected-day cards
     └── States/                    # loading, empty, access denied
 ```
 
